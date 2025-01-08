@@ -1,8 +1,6 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -20,27 +18,22 @@ func LoginController(w http.ResponseWriter, r *http.Request) {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		// Find the user by email
-		var user User
-		err := db.DB.QueryRow("SELECT id, email, username, password_hash FROM users WHERE email = ?", email).Scan(&user.ID, &user.Email, &user.Username, &user.Password)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-			} else {
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-			}
+		user := db.GetUserByEmail(email)
+		if user == nil {
+			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
 		// Compare password
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if err != nil {
 			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 			return
 		}
 
 		// Create session (cookie)
-		sessionID := fmt.Sprintf("%d", user.ID)
+		sessionID := db.GenerateToken()
+		db.Save(user.Username, sessionID)
 		http.SetCookie(w, &http.Cookie{
 			Name:     SESSIONCOOKIENAME,
 			Value:    sessionID,

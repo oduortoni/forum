@@ -6,6 +6,8 @@ import (
 )
 
 func Logout(w http.ResponseWriter, r *http.Request) {
+	Revoke(w, r);
+	
 	http.SetCookie(w, &http.Cookie{
 		Name:     SESSIONCOOKIENAME,
 		Value:    "",

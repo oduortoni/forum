@@ -21,27 +21,14 @@ func RegisterController(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		// Hash the password
-		Password, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		// Insert the user into the database
-		stmt, err := db.DB.Prepare("INSERT INTO users (email, username, password_hash) VALUES (?, ?, ?)")
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
-
-		_, err = stmt.Exec(email, username, Password)
-		if err != nil {
-			if err.Error() == "UNIQUE constraint failed: users.email" {
-				http.Error(w, "Email already taken", http.StatusConflict)
-			} else {
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-			}
-			return
+		if ok := db.RegisterUser(email, username, string(hashedPassword)); !ok {
+			http.Error(w, "Unable to register user", http.StatusConflict)
 		}
 
 		http.Redirect(w, r, "/login", http.StatusFound)
