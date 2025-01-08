@@ -7,6 +7,7 @@ import (
 
 	"forum/db"
 	"forum/controllers"
+	"forum/utils"
 )
 
 func init() {
@@ -16,7 +17,9 @@ func init() {
 func main() {
 	defer db.Close() // close the db conn after application terminates
 
-	port := 9000
+	port := utils.Port()
+	fmt.Printf("Server listening on http://localhost:%d\n", port)
+	address := fmt.Sprintf("0.0.0.0:%d", port)
 
 	// Set up routes
 	http.HandleFunc("/", controllers.Index)
@@ -27,7 +30,5 @@ func main() {
 	http.HandleFunc("/login/submit", controllers.LoginController)
 	http.HandleFunc("/logout", controllers.Logout)
 
-	fmt.Printf("Server running on http://localhost:%d\n", port)
-	address := fmt.Sprintf(":%d", port)
 	log.Fatal(http.ListenAndServe(address, nil))
 }

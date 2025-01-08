@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"math/rand"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -63,16 +62,4 @@ func Delete(token string) bool {
 	}
 
 	return rowsAffected > 0
-}
-
-// generateToken generates a random 16-character token.
-func GenerateToken() string {
-	characters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	token := make([]byte, 16)
-
-	for i := range token {
-		token[i] = characters[rand.Intn(len(characters))]
-	}
-
-	return string(token)
 }

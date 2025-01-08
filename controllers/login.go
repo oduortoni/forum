@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	"forum/db"
-
 	"golang.org/x/crypto/bcrypt"
+
+	"forum/db"
+	"forum/utils"
 )
 
 func LoginView(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +33,7 @@ func LoginController(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Create session (cookie)
-		sessionID := db.GenerateToken()
+		sessionID := utils.GenerateToken(0)
 		db.Save(user.Username, sessionID)
 		http.SetCookie(w, &http.Cookie{
 			Name:     SESSIONCOOKIENAME,
