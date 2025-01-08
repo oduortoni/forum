@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"forum/db"
 	"log"
 	"net/http"
+
+	"forum/db"
+	"forum/controllers"
 )
 
 func init() {
@@ -17,13 +19,13 @@ func main() {
 	port := 9000
 
 	// Set up routes
-	http.HandleFunc("/", Index)
-	http.HandleFunc("/dashboard", Dashboard)
-	http.HandleFunc("/register", RegisterView)
-	http.HandleFunc("/register/submit", RegisterController)
-	http.HandleFunc("/login", LoginView)
-	http.HandleFunc("/login/submit", LoginController)
-	http.HandleFunc("/logout", Logout)
+	http.HandleFunc("/", controllers.Index)
+	http.HandleFunc("/dashboard", controllers.Dashboard)
+	http.HandleFunc("/register", controllers.RegisterView)
+	http.HandleFunc("/register/submit", controllers.RegisterController)
+	http.HandleFunc("/login", controllers.LoginView)
+	http.HandleFunc("/login/submit", controllers.LoginController)
+	http.HandleFunc("/logout", controllers.Logout)
 
 	fmt.Printf("Server running on http://localhost:%d\n", port)
 	address := fmt.Sprintf(":%d", port)
