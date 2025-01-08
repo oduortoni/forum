@@ -1,0 +1,27 @@
+<h1>Welcome, {{.Username}}!</h1>
+<h2>Create a New Post</h2>
+<form action="/posts/create" method="POST">
+  <label for="title">Title:</label><br>
+  <input type="text" id="title" name="title"><br><br>
+
+  <label for="content">Content:</label><br>
+  <textarea id="content" name="content"></textarea><br><br>
+
+  <label for="categories">Categories:</label><br>
+  {{range .Categories}}
+    <input type="checkbox" name="categories" value="{{.ID}}">{{.Name}}<br>
+  {{end}}
+
+  <input type="submit" value="Create Post">
+</form>
+<hr>
+
+<h2>All Posts</h2>
+{{range .Posts}}
+  <div>
+    <h3>{{.Title}}</h3>
+    <p>{{.Content}}</p>
+    <p>Created by {{.Username}} on {{.CreatedAt}}</p>
+    <p>Categories: {{range .Categories}} {{.}} {{end}}</p>
+  </div>
+{{end}}

@@ -7,7 +7,7 @@ import (
 )
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {
-	username := Authorize(w, r)
+	_, username := Authorize(w, r)
 	if username == "" {
 		fmt.Fprintf(w, "<h1>User not logged in</h1>")
 		// http.Redirect(w, r, "/login", http.StatusFound)

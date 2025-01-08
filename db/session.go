@@ -12,6 +12,7 @@ func InitializeSessionTable() {
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS sessions (
 			token TEXT PRIMARY KEY,
+			userid INTEGER NOT NULL,
 			username TEXT NOT NULL
 		)
 	`)
@@ -21,23 +22,24 @@ func InitializeSessionTable() {
 }
 
 // Remember retrieves the username associated with the provided token.
-func Remember(token string) string {
+func Remember(token string) (int, string) {
+	var userID int = 0
 	var username string
-	err = db.QueryRow("SELECT username FROM sessions WHERE token = ?", token).Scan(&username)
+	err = db.QueryRow("SELECT userid, username FROM sessions WHERE token = ?", token).Scan(&userID, &username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return ""
+			return userID, ""
 		}
 		fmt.Println("Error executing query:", err)
-		return ""
+		return userID, ""
 	}
 
-	return username
+	return userID, username
 }
 
 // Save generates a new token and saves the username-token pair to the database.
-func Save(username string, token string) (string, bool) {
-	_, err = db.Exec("INSERT INTO sessions (token, username) VALUES (?, ?)", token, username)
+func Save(userid int, username string, token string) (string, bool) {
+	_, err = db.Exec("INSERT INTO sessions (token, userid, username) VALUES (?, ?, ?)", token, userid, username)
 	if err != nil {
 		fmt.Println("Error inserting into database:", err)
 		return "", false

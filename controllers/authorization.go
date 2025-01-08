@@ -8,12 +8,12 @@ import (
 )
 
 // Middleware to check if user is logged in
-func Authorize(w http.ResponseWriter, r *http.Request) string {
+func Authorize(w http.ResponseWriter, r *http.Request) (int, string) {
 	cookie, err := r.Cookie(SESSIONCOOKIENAME)
 	if err != nil {
 		fmt.Println(err)
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return ""
+		// http.Redirect(w, r, "/login", http.StatusFound)
+		return 0, ""
 	}
 
 	// Validate session (cookie)

@@ -34,7 +34,7 @@ func LoginController(w http.ResponseWriter, r *http.Request) {
 
 		// Create session (cookie)
 		sessionID := utils.GenerateToken(0)
-		db.Save(user.Username, sessionID)
+		db.Save(user.ID, user.Username, sessionID)
 		http.SetCookie(w, &http.Cookie{
 			Name:     SESSIONCOOKIENAME,
 			Value:    sessionID,

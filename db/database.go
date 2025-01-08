@@ -25,6 +25,7 @@ func Init() {
 	}
 	InitializeUsersTable()
 	InitializeSessionTable()
+	InitializePostTables()
 }
 
 // Close the database connection
